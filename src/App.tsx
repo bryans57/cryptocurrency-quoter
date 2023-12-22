@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
 import CryptoImage from './assets/crypto-image.png';
 import Form from './components/Form';
+import { useEffect, useState } from 'react';
+import { getCoinPrice } from './api';
+import { CurrencyCompare } from './models';
 
 const Contenedor = styled.div`
 	max-width: 900px;
@@ -41,12 +44,27 @@ const Heading = styled.h1`
 `;
 
 function App() {
+	const [currencys, setCurrencys] = useState({} as CurrencyCompare);
+	const [coinPrice, setCoinPrice] = useState({});
+
+	useEffect(() => {
+		if (Object.keys(currencys).length > 0) {
+			const getChangeCoin = async () => {
+				console.log(currencys);
+				return getCoinPrice(currencys);
+			};
+			getChangeCoin().then((data) => {
+				setCoinPrice(data);
+			});
+		}
+	}, [currencys]);
+
 	return (
 		<Contenedor>
 			<Image src={CryptoImage} alt='crypto image' />
 			<div>
 				<Heading>Quote cryptocurrencies instantly</Heading>
-				<Form />
+				<Form setCurrencys={setCurrencys} />
 			</div>
 		</Contenedor>
 	);

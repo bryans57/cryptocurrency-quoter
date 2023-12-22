@@ -3,6 +3,12 @@ import useSelectCurrency from '../hooks/useSelectCurrency';
 import { CurrencyConst } from '../constants';
 import { useEffect, useState } from 'react';
 import { getCoinList } from '../api';
+import Error from './Error';
+import { CurrencyCompare } from '../models';
+
+interface FormProps {
+	setCurrencys: React.Dispatch<React.SetStateAction<CurrencyCompare>>;
+}
 
 const InputSubmit = styled.input`
 	background-color: #9497ff;
@@ -23,8 +29,10 @@ const InputSubmit = styled.input`
 	}
 `;
 
-const Form = () => {
-	const [cryptoCurrency, setCryptoCurrency] = useState([]);
+const Form = ({ setCurrencys }: FormProps) => {
+	const [error, setError] = useState(false);
+	const [listCryptoCurrency, setCryptoCurrency] = useState([]);
+
 	useEffect(() => {
 		const cryptoList = async () => {
 			const data = await getCoinList();
@@ -33,20 +41,34 @@ const Form = () => {
 		cryptoList();
 	}, []);
 
-	const [SelectCurrency] = useSelectCurrency(
+	const [currency, SelectCurrency] = useSelectCurrency(
 		'Select your Currency',
 		CurrencyConst
 	);
-	const [SelectCrypto] = useSelectCurrency(
+	const [cryptoCurrency, SelectCrypto] = useSelectCurrency(
 		'Select your Cryptocurrency',
-		cryptoCurrency
+		listCryptoCurrency
 	);
+
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		if ([currency, cryptoCurrency].includes('')) {
+			setError(true);
+			return;
+		}
+		setError(false);
+		setCurrencys({ crypto: cryptoCurrency, currency });
+	};
+
 	return (
-		<form>
-			<SelectCurrency />
-			<SelectCrypto />
-			<InputSubmit type='submit' value={'Quote'} />
-		</form>
+		<>
+			{error && <Error>All fields are required</Error>}
+			<form onSubmit={handleSubmit}>
+				<SelectCurrency />
+				<SelectCrypto />
+				<InputSubmit type='submit' value={'Quote'} />
+			</form>
+		</>
 	);
 };
 

@@ -22,7 +22,7 @@ const useSelectCurrency = (label: string, options: Currency[]) => {
 		width: 100%;
 		font-family: 'Lato', sans-serif;
 	`;
-	const [state, setState] = useState('');
+	const [state, setState] = useState<string>('');
 
 	const useSelect = () => (
 		<>
@@ -42,7 +42,7 @@ const useSelectCurrency = (label: string, options: Currency[]) => {
 			</Select>
 		</>
 	);
-	return [useSelect];
+	return [state, useSelect] as const;
 };
 
 export default useSelectCurrency;

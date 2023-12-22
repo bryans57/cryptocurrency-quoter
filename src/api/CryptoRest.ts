@@ -1,4 +1,4 @@
-import { Currency } from '../models';
+import { Currency, CurrencyCompare } from '../models';
 
 export const getCoinList = async () => {
 	const response = await fetch(
@@ -13,4 +13,13 @@ export const getCoinList = async () => {
 		};
 		return object;
 	});
+};
+
+export const getCoinPrice = async ({ currency, crypto }: CurrencyCompare) => {
+	const response = await fetch(
+		`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${crypto}&tsyms=${currency}`
+	);
+	const result = await response.json();
+	const coin = result.DISPLAY[crypto][currency];
+	return coin;
 };
