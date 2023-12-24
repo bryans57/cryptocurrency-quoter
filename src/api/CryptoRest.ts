@@ -2,7 +2,7 @@ import { Currency, CurrencyCompare } from '../models';
 
 export const getCoinList = async () => {
 	const response = await fetch(
-		'https://min-api.cryptocompare.com/data/top/mktcapfull?limit=10&tsym=USD'
+		'https://min-api.cryptocompare.com/data/top/mktcapfull?limit=20&tsym=USD'
 	);
 	const result = await response.json();
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

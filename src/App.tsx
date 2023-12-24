@@ -3,7 +3,9 @@ import CryptoImage from './assets/crypto-image.png';
 import Form from './components/Form';
 import { useEffect, useState } from 'react';
 import { getCoinPrice } from './api';
-import { CurrencyCompare } from './models';
+import { Coin, CurrencyCompare } from './models';
+import CoinInfo from './components/CoinInfo';
+import Spinner from './components/Spinner';
 
 const Contenedor = styled.div`
 	max-width: 900px;
@@ -45,17 +47,24 @@ const Heading = styled.h1`
 
 function App() {
 	const [currencys, setCurrencys] = useState({} as CurrencyCompare);
-	const [coinPrice, setCoinPrice] = useState({});
+	const [coinPrice, setCoinPrice] = useState({} as Coin);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		if (Object.keys(currencys).length > 0) {
+			setLoading(true);
 			const getChangeCoin = async () => {
-				console.log(currencys);
 				return getCoinPrice(currencys);
 			};
-			getChangeCoin().then((data) => {
-				setCoinPrice(data);
-			});
+			getChangeCoin()
+				.then((data) => {
+					setCoinPrice(data);
+					setLoading(false);
+				})
+				.catch((error) => {
+					console.log(error);
+					setLoading(false);
+				});
 		}
 	}, [currencys]);
 
@@ -65,6 +74,9 @@ function App() {
 			<div>
 				<Heading>Quote cryptocurrencies instantly</Heading>
 				<Form setCurrencys={setCurrencys} />
+
+				{loading && <Spinner />}
+				{!loading && coinPrice.PRICE && <CoinInfo coinPrice={coinPrice} />}
 			</div>
 		</Contenedor>
 	);
