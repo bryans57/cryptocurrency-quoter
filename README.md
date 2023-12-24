@@ -12,4 +12,4 @@ A simple cryptocurrency quotes app built with React Hooks and use Cryptocompare 
 
 ## Demo
 
-![Demo](https://quiet-dolphin-cdd587.netlify.app)
+[Demo](https://quiet-dolphin-cdd587.netlify.app)
